@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="May Gong — storyteller, builder, filmmaker. New York, NY.">
+<title>May Gong</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Miltonian&display=swap" rel="stylesheet">
+
+<!-- Remember theme choice before paint (prevents flash) -->
+<script>
+  (function () {
+    var t = localStorage.getItem('theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+
+<style>
+/* ============================================================
+   1. THEME TOKENS — edit colors here, everything else follows
+   ============================================================ */
+:root {
+  --black: #111;
+  --white: #fff;
+  --bg: #fff;
+  --fg: #111;
+
+  /* Accent palette — used for link highlights, nav chips, etc. */
+  --green:  #8FC95D;
+  --blue:   #3ABCE4;
+  --pink:   #FF90ED;
+  --orange: #E3924B;
+}
+[data-theme=dark] { --bg: #121212; --fg: #efefef; }
+
+/* ============================================================
+   2. BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   3. HEADER — logo left, socials + location right
+   ============================================================ */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px 24px;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 100;
+}
+.logo {
+  text-decoration: none;
+  color: var(--fg);
+  font-family: 'Miltonian', cursive;
+  font-size: 2rem;
+  font-weight: 400; /* Miltonian ships one weight */
+  white-space: nowrap;
+  transition: opacity .15s;
+  margin-left: 56px; /* clears the hanging bulb cord */
+}
+.logo:hover { opacity: .8; }
+/* To use an image logo instead:
+   <a href="/" class="logo"><img src="images/logo.png" alt="May Gong" style="height:48px"></a> */
+
+.header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.social-icons { display: flex; gap: 14px; align-items: center; }
+.social-icons a {
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  transition: opacity .15s;
+}
+.social-icons a:hover { opacity: .55; }
+.social-icons svg { width: 20px; height: 20px; }
+
+/* --- Location pin + hover history tooltip --- */
+.location { position: relative; font-size: .95rem; cursor: default; user-select: none; white-space: nowrap; }
+.location-history {
+  position: absolute; right: 0; top: calc(100% + 10px);
+  background: var(--fg); color: var(--bg);
+  border-radius: 6px; padding: 10px 16px;
+  display: flex; flex-direction: column; gap: 6px;
+  opacity: 0; pointer-events: none; transform: translateY(-6px);
+  transition: opacity .22s ease, transform .22s ease;
+  z-index: 200; box-shadow: 0 4px 16px rgba(0,0,0,.12);
+}
+.location-history::before {
+  content: ""; position: absolute; top: -6px; right: 14px;
+  border: 6px solid transparent; border-top: none; border-bottom-color: var(--fg);
+}
+.location:hover .location-history { opacity: 1; transform: translateY(0); }
+.loc-row { display: flex; justify-content: space-between; gap: 24px; font-size: .82rem; white-space: nowrap; }
+.loc-years { font-weight: 500; font-size: .78rem; }
+.loc-row:nth-child(1) .loc-years { color: var(--blue); }
+.loc-row:nth-child(2) .loc-years { color: var(--green); }
+.loc-row:nth-child(3) .loc-years { color: var(--orange); }
+
+/* ============================================================
+   4. MAIN LAYOUT — photo left, bio right
+   ============================================================ */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 52px 24px 24px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+.home-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 32px;
+  align-items: start;
+}
+.home-photo-wrap { position: relative; width: 100%; }
+.home-photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: center 42%; /* crop focus for the light-mode (baby) photo */
+  display: block;
+}
+/* Dark-mode photo, crossfades in over the light one */
+.home-photo-alt {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+[data-theme=dark] .home-photo-alt { opacity: 1; }
+
+/* ============================================================
+   5. BIO — colored inline links, fill on hover
+   ============================================================ */
+.home-content { padding-top: 8px; }
+.home-bio p {
+  font-size: 1.15rem;
+  line-height: 1.65;
+  margin-bottom: .8em;
+  text-wrap: pretty;
+}
+.home-bio p:last-child { margin-bottom: 0; }
+.home-bio strong { font-weight: 700; }
+.home-bio a {
+  color: var(--link-color);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  padding: 0 2px; margin: 0 -2px;
+  border-radius: 2px;
+  transition: background .15s, color .15s;
+}
+.home-bio a:hover { background: var(--link-color); color: #fff; text-decoration: none; }
+
+/* ============================================================
+   6. DARK MODE TOGGLE — light bulb hanging from the top left
+   Click the bulb to switch: lit = light mode, off = dark mode.
+   Tweak: cord length via .bulb-cord height, position via .bulb-toggle left
+   ============================================================ */
+.bulb-toggle {
+  position: fixed; top: 0; left: 34px; z-index: 1000;
+  background: none; border: none; cursor: pointer; padding: 0;
+  display: flex; flex-direction: column; align-items: center;
+  transform-origin: top center;
+  animation: bulb-sway 5s ease-in-out infinite alternate;
+}
+.bulb-toggle:hover { animation: bulb-sway-big 1.6s ease-in-out infinite alternate; }
+.bulb-toggle:active .bulb-cord { height: 74px; }  /* little tug on click */
+@keyframes bulb-sway     { from { transform: rotate(-2deg); } to { transform: rotate(2deg); } }
+@keyframes bulb-sway-big { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
+
+.bulb-cord {
+  width: 1.5px; height: 66px;
+  background: var(--fg);
+  opacity: .5;
+  transition: height .12s ease;
+}
+.bulb-glass { display: block; width: 48px; height: 53px; margin-top: -10px; }
+
+/* Hand-drawn doodle parts */
+.bulb-glass .sketch {           /* glass outline, filament, coil loops */
+  fill: none; stroke: #8a8a8a; stroke-width: 2.6;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.bulb-glass .basefill { fill: #8a8a8a; }   /* ribbed screw base */
+.bulb-glass .blob { fill: #F6E8B0; transition: opacity .3s; }   /* warm glow inside */
+.bulb-glass .rays {             /* sketchy dashes around the bulb */
+  fill: none; stroke: #F0D479; stroke-width: 3;
+  stroke-linecap: round; transition: opacity .3s;
+}
+
+/* Off (dark mode): glow + rays fade out, sketch outline stays */
+[data-theme=dark] .bulb-glass .blob,
+[data-theme=dark] .bulb-glass .rays { opacity: 0; }
+
+/* ============================================================
+   7. FOOTER
+   ============================================================ */
+footer { padding: 24px 40px; text-align: right; }
+footer a { font-size: .95rem; color: var(--fg); text-decoration: underline; }
+footer a:hover { opacity: .6; }
+
+/* ============================================================
+   8. MOBILE
+   ============================================================ */
+@media (max-width: 768px) {
+  header { padding: 12px 16px; }
+  main { padding: 16px 16px 100px; }
+  footer { padding: 16px; }
+  .logo { font-size: 1.2rem; margin-left: 36px; }
+  .bulb-toggle { left: 16px; }
+  .bulb-cord { height: 42px; }
+  .bulb-toggle:active .bulb-cord { height: 48px; }
+  .bulb-glass { width: 36px; height: 40px; margin-top: -8px; }
+  .home-layout { grid-template-columns: 1fr; gap: 20px; }
+  .home-content { padding-top: 0; }
+  .home-bio p { font-size: .95rem; line-height: 1.6; margin-bottom: .7em; }
+  .loc-full { display: none; }
+  .loc-short { display: inline; }
+}
+.loc-short { display: none; }
+</style>
+</head>
+<body>
+
+<!-- ==================== HEADER ==================== -->
+<header>
+  <a href="/" class="logo" aria-label="May Gong — home">May Gong</a>
+
+  <div class="header-right">
+    <div class="header-top-row">
+      <!-- SOCIAL LINKS — swap hrefs for your handles -->
+      <div class="social-icons">
+        <a href="https://instagram.com/mayygong" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <circle cx="12" cy="12" r="4"></circle>
+            <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"></circle>
+          </svg>
+        </a>
+        <a href="https://twitter.com/maysquarepants" target="_blank" rel="noopener" aria-label="Twitter / X">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+          </svg>
+        </a>
+        <a href="https://www.linkedin.com/in/may-gong/" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+            <rect x="2" y="9" width="4" height="12"></rect>
+            <circle cx="4" cy="4" r="2"></circle>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- LOCATION + hover history — edit cities/years freely -->
+    <div class="location">
+      <span>📍 <span class="loc-full">New York, NY</span><span class="loc-short">NYC</span></span>
+      <div class="location-history">
+        <div class="loc-row"><span>New York, NY</span><span class="loc-years">2022–now</span></div>
+        <div class="loc-row"><span>Charlottesville, VA</span><span class="loc-years">2018–2022</span></div>
+        <div class="loc-row"><span>Baoding, China</span><span class="loc-years">until 2016</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ==================== MAIN ==================== -->
+<main>
+  <div class="home-layout">
+
+    <!-- PHOTO — light mode shows the first image, dark mode crossfades to the second.
+         Adjust each crop via object-position in .home-photo / .home-photo-alt -->
+    <div class="home-photo-wrap">
+      <img class="home-photo" src="images/may-baby.jpg" alt="May Gong as a kid, camera in hand">
+      <img class="home-photo-alt" src="images/may.jpg" alt="May Gong">
+    </div>
+
+    <!-- BIO — each <p> is a block you can reorder or delete.
+         Give each link its own accent via style="--link-color: var(--green|--blue|--pink|--orange)" -->
+    <div class="home-content">
+      <div class="home-bio">
+
+        <p>Hi, I'm May! I tell stories and I make things. Currently, I lead product marketing at
+          <a href="https://hypha.co" target="_blank" rel="noopener" style="--link-color: var(--green)"><strong>Hypha</strong></a> 🌿</p>
+
+        <p>I write my own playbooks by uncovering the truth in things, which is why I'm drawn to building 0→1. Previously, I led marketing at
+          <a href="https://privy.io" target="_blank" rel="noopener" style="--link-color: var(--blue)">Privy</a>
+          before <a href="https://stripe.com/newsroom" target="_blank" rel="noopener" style="--link-color: var(--orange)">Stripe acquired us</a>,
+          and was the founding PMM at
+          <a href="https://blockaid.io/" target="_blank" rel="noopener" style="--link-color: var(--pink)">Blockaid</a>.
+          In my past life, I made numbers tell stories at
+          <a href="https://www.oliverwyman.com" target="_blank" rel="noopener" style="--link-color: var(--green)">Oliver Wyman</a>
+          and the
+          <a href="https://www.oliverwymanforum.com" target="_blank" rel="noopener" style="--link-color: var(--green)">OW think tank</a>.</p>
+
+        <p>When I'm not thinking about emerging tech, I make
+          <a href="https://www.instagram.com/p/DOEHlrckbqB/?hl=en" target="_blank" rel="noopener" style="--link-color: var(--orange)">short films</a>
+          about people I admire and things I love. If you're in NYC, come to my
+          <a href="https://partiful.com/e/fKviJOVORzBPzI6qNIoU" target="_blank" rel="noopener" style="--link-color: var(--pink)">salsa class</a>
+          or one of my
+          <a href="https://www.instagram.com/p/DXyHcHhjgnA/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" rel="noopener" style="--link-color: var(--blue)">co-creation hours</a> 🎨</p>
+
+        <p>If you're still here, enjoy my writings on tech and culture on
+          <a href="https://amilligrammore.substack.com/" target="_blank" rel="noopener" style="--link-color: var(--orange)">Substack</a>.</p>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ==================== DARK MODE TOGGLE (hanging light bulb) ==================== -->
+<button class="bulb-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+  <span class="bulb-cord"></span>
+  <svg class="bulb-glass" viewBox="0 0 72 80" aria-hidden="true">
+    <!-- sketchy dashes -->
+    <g class="rays">
+      <path d="M15 7 Q18 10 20.5 13"></path>
+      <path d="M57 7 Q54 10 51.5 13"></path>
+      <path d="M3.5 27 Q8 27.5 11.5 28"></path>
+      <path d="M68.5 27 Q64 27.5 60.5 28"></path>
+      <path d="M9 48 Q12.5 45.5 15.5 43.5"></path>
+      <path d="M63 48 Q59.5 45.5 56.5 43.5"></path>
+    </g>
+    <!-- warm glow blob (slightly off-round, like a marker fill) -->
+    <path class="blob" d="M28 23 q7.5 -9 15 -4 q6.5 4.5 5 13 q-1.5 7.5 -9.5 8 q-8.5 .5 -11 -6.5 q-2 -6 .5 -10.5 Z"></path>
+    <!-- glass outline, hand-wobbled circle -->
+    <path class="sketch" d="M36 13.2 C46 12.8 53.3 20.5 53 30.2 C52.7 40 45 47 36.3 47.2 C26.5 47.4 19.2 39.8 19 30.5 C18.8 20.8 26.3 13.6 36 13.2 Z"></path>
+    <!-- filament wires + coil loops -->
+    <path class="sketch" d="M31.5 47 L29.5 40.5 M40.5 47 L42.5 40.5"></path>
+    <circle class="sketch" cx="30" cy="37.5" r="2.4"></circle>
+    <circle class="sketch" cx="36" cy="37.5" r="2.4"></circle>
+    <circle class="sketch" cx="42" cy="37.5" r="2.4"></circle>
+    <!-- ribbed screw base -->
+    <g class="basefill">
+      <rect x="29" y="49" width="14" height="3.4" rx="1.7"></rect>
+      <rect x="30" y="53.4" width="12" height="3.4" rx="1.7"></rect>
+      <rect x="31.5" y="57.8" width="9" height="3.2" rx="1.6"></rect>
+    </g>
+  </svg>
+</button>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <a href="mailto:xygong57@gmail.com">say hi</a>
+</footer>
+
+<script>
+  document.getElementById('theme-toggle').addEventListener('click', function () {
+    var html = document.documentElement;
+    var isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
