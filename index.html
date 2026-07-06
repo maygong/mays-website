@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="May Gong — storyteller, builder, filmmaker. New York, NY.">
 <title>May Gong</title>
+<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="apple-touch-icon" href="images/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Miltonian&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light+Two&display=swap" rel="stylesheet">
 
 <!-- Remember theme choice before paint (prevents flash) -->
 <script>
@@ -66,9 +68,9 @@ header {
 .logo {
   text-decoration: none;
   color: var(--fg);
-  font-family: 'Miltonian', cursive;
-  font-size: 2rem;
-  font-weight: 400; /* Miltonian ships one weight */
+  font-family: 'Shadows Into Light Two', cursive;
+  font-size: 2.4rem;
+  font-weight: 400; /* this font ships one weight */
   white-space: nowrap;
   transition: opacity .15s;
   margin-left: 56px; /* clears the hanging bulb cord */
@@ -134,9 +136,10 @@ main {
 .home-photo {
   width: 100%;
   aspect-ratio: 4 / 3;
-  object-fit: cover;
-  object-position: center 42%; /* crop focus for the light-mode (baby) photo */
+  object-fit: contain; /* show baby May's whole body inside the horizontal frame */
+  object-position: center;
   display: block;
+  background: #f2efe9; /* soft cream behind the portrait's side margins */
 }
 /* Dark-mode photo, crossfades in over the light one */
 .home-photo-alt {
@@ -320,7 +323,7 @@ footer a:hover { opacity: .6; }
         <p>When I'm not thinking about emerging tech, I make
           <a href="https://www.instagram.com/p/DOEHlrckbqB/?hl=en" target="_blank" rel="noopener" style="--link-color: var(--orange)">short films</a>
           about people I admire and things I love. If you're in NYC, come to my
-          <a href="https://partiful.com/e/fKviJOVORzBPzI6qNIoU" target="_blank" rel="noopener" style="--link-color: var(--pink)">salsa class</a>
+          <a href="https://partiful.com/e/fKviJOVORzBPzI6qNIoU" target="_blank" rel="noopener" style="--link-color: var(--pink)">salsa class</a> 💃
           or one of my
           <a href="https://www.instagram.com/p/DXyHcHhjgnA/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" rel="noopener" style="--link-color: var(--blue)">co-creation hours</a> 🎨</p>
 
